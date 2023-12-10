@@ -3,7 +3,6 @@ import fs from 'fs';
 import { join } from 'path';
 import matter from 'gray-matter';
 import { ContentType } from './blog.api-types';
-import { getParser } from './blog.api-utils';
 
 const CONTENT_PATH = join(process.cwd(), './src/content');
 
@@ -13,9 +12,6 @@ export const getPostById = async (id: string): Promise<ContentType> => {
 
   const { data, content } = matter(await fs.promises.readFile(fullPath, 'utf8'));
 
-  const parser = await getParser();
-  const html = await parser.process(content);
-
   return {
     ...data,
     slug: realId,
@@ -24,7 +20,7 @@ export const getPostById = async (id: string): Promise<ContentType> => {
     description: data.description ?? '',
     image: data.image ?? '',
     date: `${data.date?.toISOString().slice(0, 10)}`,
-    html: html.value.toString(),
+    html: content,
   };
 };
 
