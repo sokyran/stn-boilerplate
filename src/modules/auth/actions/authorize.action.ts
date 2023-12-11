@@ -1,5 +1,6 @@
 'use server';
 
+import { AuthError } from 'next-auth';
 import { signIn } from '../client';
 import { AuthorizeData } from '../types';
 
@@ -9,14 +10,17 @@ export const authorizeAction = async ({ data, type }: AuthorizeData): Promise<st
       type,
       email: data.email,
       password: data.password,
+      redirect: false,
     });
 
     return null;
   } catch (error) {
-    if ((error as Error).message.includes('CredentialsSignin')) {
-      return 'CredentialsSignin';
+    const err = error as AuthError;
+
+    if (err.type && err.type.includes('CredentialsSignin')) {
+      throw new Error('Invalid credentials');
     }
 
-    throw error;
+    throw err.cause?.err;
   }
 };

@@ -12,8 +12,8 @@ interface Props {
   session: Session | null;
 }
 
-export const AppProvider: FC<PropsWithChildren<Props>> = ({ children }) => (
-  <SessionProvider>
+export const AppProvider: FC<PropsWithChildren<Props>> = ({ children, session }) => (
+  <SessionProvider session={session}>
     <UIProvider>
       <ToastProvider>
         <ModalProvider

@@ -14,19 +14,19 @@ export const useAuthorize = (authType: AuthorizeData['type']): UseAuthorize => {
   const router = useRouter();
 
   const handleFormSubmit = async (data: AuthorizeData['data']): Promise<void> => {
-    const code = await authorizeAction({
-      type: authType,
-      data,
-    } as AuthorizeData);
+    try {
+      await authorizeAction({
+        type: authType,
+        data,
+      } as AuthorizeData);
 
-    if (code === 'CredentialSignin') {
+      router.push('/');
+    } catch (error) {
       notify({
+        message: (error as Error).message,
         type: ToastTypes.Danger,
-        message: 'Invalid credentials',
       });
     }
-
-    router.push('/');
   };
 
   return {
